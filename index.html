@@ -43,8 +43,8 @@
         }
 
         button {
-            padding: 16px 24px;
-            font-size: 18px;
+            padding: 12px 20px;
+            font-size: 16px;
             background-color: #4CAF50;
             color: white;
             border: none;
@@ -52,7 +52,7 @@
             cursor: pointer;
             margin: 8px;
             width: 100%;
-            max-width: 300px;
+            max-width: 200px;
             touch-action: manipulation;
             -webkit-appearance: none;
             transition: background-color 0.2s;
@@ -95,16 +95,45 @@
         }
 
         #result {
-            font-size: 28px;
-            margin: 24px 0;
+            font-size: 64px;
+            margin: 40px 0;
             padding: 16px;
             font-weight: bold;
             color: #1a1a1a;
-            min-height: 80px;
+            min-height: 120px;
             display: flex;
             align-items: center;
             justify-content: center;
             word-break: break-word;
+            line-height: 1.2;
+            transition: font-size 0.2s;
+        }
+
+        .size-controls {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            display: flex;
+            gap: 4px;
+            opacity: 0.3;
+            transition: opacity 0.2s;
+        }
+
+        .size-controls:hover {
+            opacity: 1;
+        }
+
+        .size-button {
+            padding: 4px 8px;
+            font-size: 16px;
+            background-color: #808080;
+            max-width: none;
+            width: auto;
+            min-width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
         textarea {
@@ -167,9 +196,13 @@ Green Shoes"></textarea>
             <button onclick="initializeDrawer()">Load Items</button>
         </div>
         <div id="drawerSection" class="drawer-container">
+            <div class="size-controls">
+                <button onclick="adjustTextSize(-4)" class="secondary size-button">−</button>
+                <button onclick="adjustTextSize(4)" class="secondary size-button">+</button>
+            </div>
             <div class="button-group">
                 <button id="previousButton" onclick="previousItem()" class="secondary" disabled>Previous</button>
-                <button id="drawButton" onclick="drawItem()">Draw Next Item</button>
+                <button id="drawButton" onclick="drawItem()">Next</button>
             </div>
             <div id="result"></div>
             <div id="optionsSection" class="options-container">
@@ -186,6 +219,7 @@ Green Shoes"></textarea>
         let originalItems = [];
         let drawnItems = [];
         let currentIndex = -1;
+        let currentFontSize = 64;
 
         // Prevent double-tap zoom on buttons
         document.addEventListener('touchend', function(event) {
@@ -265,6 +299,13 @@ Green Shoes"></textarea>
             document.getElementById('previousButton').disabled = true;
             document.getElementById('result').textContent = '';
             document.getElementById('optionsSection').style.display = 'none';
+        }
+
+        function adjustTextSize(delta) {
+            const result = document.getElementById('result');
+            currentFontSize = Math.max(32, Math.min(120, currentFontSize + delta));
+            result.style.fontSize = currentFontSize + 'px';
+            result.style.minHeight = Math.max(120, currentFontSize * 2) + 'px';
         }
     </script>
 </body>
