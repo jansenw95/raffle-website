@@ -2,181 +2,166 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Item Drawer</title>
     <style>
         * {
-            box-sizing: border-box;
-            -webkit-tap-highlight-color: transparent;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
         }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
             margin: 0;
-            padding: 16px;
+            padding: 20px;
             text-align: center;
+            background-color: #f0f2f5;
+            height: 100vh;
             display: flex;
             flex-direction: column;
-            min-height: 100vh;
-            justify-content: center;
-            background-color: #f0f2f5;
+            overflow: hidden;
+            box-sizing: border-box;
         }
 
         .container {
-            background-color: #ffffff;
-            padding: 20px;
-            border-radius: 16px;
-            margin: 0 auto;
-            width: 100%;
-            max-width: 600px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            position: relative;
         }
 
         .setup-container {
-            margin-bottom: 20px;
+            max-width: 400px;
+            margin: 0 auto;
+            width: 100%;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            position: relative;
+        }
+
+        .input-container {
+            position: relative;
+            margin: 10px 0;
+        }
+
+        .clear-button {
+            position: absolute;
+            right: 10px;
+            top: 10px;
+            background: none;
+            border: none;
+            color: #666;
+            cursor: pointer;
+            padding: 0;
+            font-size: 14px;
+            opacity: 0.7;
+        }
+
+        .clear-button:hover {
+            opacity: 1;
         }
 
         h1 {
             font-size: 24px;
             margin: 0 0 20px 0;
-            color: #1a1a1a;
+            color: #333;
+        }
+
+        .instructions {
+            font-size: 14px;
+            margin-bottom: 10px;
+            text-align: left;
+            color: #666;
+        }
+
+        textarea {
+            width: 100%;
+            height: 150px;
+            margin: 10px 0;
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+            font-size: 16px;
+            resize: vertical;
+            box-sizing: border-box;
         }
 
         button {
-            padding: 12px 20px;
+            padding: 10px 20px;
             font-size: 16px;
             background-color: #4CAF50;
             color: white;
             border: none;
-            border-radius: 12px;
+            border-radius: 5px;
             cursor: pointer;
-            margin: 8px;
-            width: 100%;
-            max-width: 200px;
-            touch-action: manipulation;
-            -webkit-appearance: none;
-            transition: background-color 0.2s;
-        }
-
-        button:active {
-            background-color: #3d8b40;
+            margin: 5px;
         }
 
         button.secondary {
             background-color: #607d8b;
         }
 
-        button.secondary:active {
-            background-color: #455a64;
-        }
-
         button:disabled {
             background-color: #cccccc;
-            cursor: not-allowed;
-        }
-
-        .button-group {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 12px;
-            margin: 16px 0;
-        }
-
-        @media (min-width: 480px) {
-            .button-group {
-                flex-direction: row;
-                justify-content: center;
-            }
-
-            button {
-                width: auto;
-            }
-        }
-
-        #result {
-            font-size: 64px;
-            margin: 40px 0;
-            padding: 16px;
-            font-weight: bold;
-            color: #1a1a1a;
-            min-height: 120px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            word-break: break-word;
-            line-height: 1.2;
-            transition: font-size 0.2s;
-        }
-
-        .size-controls {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            display: flex;
-            gap: 4px;
-            opacity: 0.3;
-            transition: opacity 0.2s;
-        }
-
-        .size-controls:hover {
-            opacity: 1;
-        }
-
-        .size-button {
-            padding: 4px 8px;
-            font-size: 16px;
-            background-color: #808080;
-            max-width: none;
-            width: auto;
-            min-width: 32px;
-            height: 32px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        textarea {
-            width: 100%;
-            height: 150px;
-            margin: 12px 0;
-            padding: 16px;
-            border-radius: 12px;
-            border: 2px solid #e0e0e0;
-            font-size: 16px;
-            font-family: inherit;
-            resize: vertical;
-        }
-
-        textarea:focus {
-            outline: none;
-            border-color: #4CAF50;
-        }
-
-        .instructions {
-            color: #666;
-            font-size: 16px;
-            margin-bottom: 12px;
-            text-align: left;
         }
 
         .drawer-container {
             display: none;
+            flex: 1;
+            flex-direction: column;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .button-controls {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 10px;
+            z-index: 10;
+        }
+
+        #result {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-weight: bold;
+            color: #1a1a1a;
+            font-size: 15vw;
+            line-height: 1.2;
+            word-break: break-word;
+            text-align: center;
+            width: 100%;
+            padding: 20px;
+            box-sizing: border-box;
         }
 
         .options-container {
             display: none;
-            margin-top: 20px;
+            position: fixed;
+            bottom: 65px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 10;
         }
 
-        /* Add safe area padding for modern iOS devices */
-        @supports(padding: max(0px)) {
-            body {
-                padding-left: max(16px, env(safe-area-inset-left));
-                padding-right: max(16px, env(safe-area-inset-right));
-                padding-bottom: max(16px, env(safe-area-inset-bottom));
-                padding-top: max(16px, env(safe-area-inset-top));
-            }
+        .size-controls {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            display: flex;
+            gap: 4px;
+            z-index: 10;
+        }
+
+        .size-button {
+            padding: 5px 10px;
+            font-size: 20px;
+            min-width: 40px;
         }
     </style>
 </head>
@@ -187,29 +172,30 @@
             <div class="instructions">
                 Enter your items below, one per line:
             </div>
-            <textarea id="itemList" placeholder="Enter items here, one per line
+            <div class="input-container">
+                <textarea id="itemList" placeholder="Enter items here, one per line
 
 Example:
 Red T-shirt
 Blue Hat
 Green Shoes"></textarea>
+                <button class="clear-button" onclick="clearInput()">Clear</button>
+            </div>
             <button onclick="initializeDrawer()">Load Items</button>
         </div>
         <div id="drawerSection" class="drawer-container">
             <div class="size-controls">
-                <button onclick="adjustTextSize(-4)" class="secondary size-button">−</button>
-                <button onclick="adjustTextSize(4)" class="secondary size-button">+</button>
+                <button onclick="adjustTextSize(-1)" class="secondary size-button">−</button>
+                <button onclick="adjustTextSize(1)" class="secondary size-button">+</button>
             </div>
-            <div class="button-group">
+            <div id="result"></div>
+            <div class="button-controls">
                 <button id="previousButton" onclick="previousItem()" class="secondary" disabled>Previous</button>
                 <button id="drawButton" onclick="drawItem()">Next</button>
             </div>
-            <div id="result"></div>
             <div id="optionsSection" class="options-container">
-                <div class="button-group">
-                    <button onclick="showNewInput()" class="secondary">New List</button>
-                    <button onclick="reuseList()" class="secondary">Reuse List</button>
-                </div>
+                <button onclick="showNewInput()" class="secondary"><u>N</u>ew List</button>
+                <button onclick="reuseList()" class="secondary"><u>R</u>euse List</button>
             </div>
         </div>
     </div>
@@ -217,16 +203,73 @@ Green Shoes"></textarea>
     <script>
         let items = [];
         let originalItems = [];
-        let drawnItems = [];
         let currentIndex = -1;
-        let currentFontSize = 64;
+        let fontSizeMultiplier = 1;
 
-        // Prevent double-tap zoom on buttons
-        document.addEventListener('touchend', function(event) {
-            if (event.target.tagName === 'BUTTON') {
-                event.preventDefault();
+        // Fisher-Yates shuffle algorithm
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+            return array;
+        }
+
+        // Add keyboard controls
+        document.addEventListener('keydown', function(event) {
+            if (document.getElementById('drawerSection').style.display === 'flex') {
+                // In drawing mode
+                switch(event.key) {
+                    case ' ':
+                    case 'ArrowRight':
+                        event.preventDefault();
+                        if (!document.getElementById('drawButton').disabled) {
+                            drawItem();
+                        }
+                        break;
+                    case 'ArrowLeft':
+                        event.preventDefault();
+                        if (!document.getElementById('previousButton').disabled) {
+                            previousItem();
+                        }
+                        break;
+                    case '+':
+                    case '=':
+                        event.preventDefault();
+                        adjustTextSize(1);
+                        break;
+                    case '-':
+                    case '_':
+                        event.preventDefault();
+                        adjustTextSize(-1);
+                        break;
+                    case 'n':
+                    case 'N':
+                        if (document.getElementById('optionsSection').style.display === 'flex') {
+                            showNewInput();
+                        }
+                        break;
+                    case 'r':
+                    case 'R':
+                        if (document.getElementById('optionsSection').style.display === 'flex') {
+                            reuseList();
+                        }
+                        break;
+                }
+            } else {
+                // In setup mode
+                if (event.key === 'Enter' && event.shiftKey) {
+                    event.preventDefault();
+                    initializeDrawer();
+                }
             }
         });
+
+        function adjustTextSize(delta) {
+            fontSizeMultiplier = Math.max(0.5, Math.min(2, fontSizeMultiplier + delta * 0.1));
+            const result = document.getElementById('result');
+            result.style.fontSize = (15 * fontSizeMultiplier) + 'vw';
+        }
 
         function initializeDrawer() {
             const itemText = document.getElementById('itemList').value.trim();
@@ -244,14 +287,12 @@ Green Shoes"></textarea>
                 return;
             }
 
-            // Store original items for reuse
             originalItems = [...items];
-            drawnItems = [];
+            items = shuffleArray([...items]); // Shuffle at the start
             currentIndex = -1;
 
-            // Hide setup section and show drawer section
             document.getElementById('setupSection').style.display = 'none';
-            document.getElementById('drawerSection').style.display = 'block';
+            document.getElementById('drawerSection').style.display = 'flex';
             document.getElementById('optionsSection').style.display = 'none';
             document.getElementById('result').textContent = '';
             document.getElementById('drawButton').disabled = false;
@@ -259,26 +300,23 @@ Green Shoes"></textarea>
         }
 
         function drawItem() {
-            if (items.length === 0) {
+            if (currentIndex >= items.length - 1) {
                 document.getElementById('drawButton').disabled = true;
-                document.getElementById('result').textContent = 'All items have been drawn!';
-                document.getElementById('optionsSection').style.display = 'block';
+                document.getElementById('result').textContent = '抽完了！';
+                document.getElementById('optionsSection').style.display = 'flex';
+                document.getElementById('previousButton').disabled = false;
                 return;
             }
 
-            const randomIndex = Math.floor(Math.random() * items.length);
-            const drawnItem = items.splice(randomIndex, 1)[0];
-            drawnItems.push(drawnItem);
-            currentIndex = drawnItems.length - 1;
-            
-            document.getElementById('result').textContent = drawnItem;
+            currentIndex++;
+            document.getElementById('result').textContent = items[currentIndex];
             document.getElementById('previousButton').disabled = currentIndex === 0;
         }
 
         function previousItem() {
             if (currentIndex > 0) {
                 currentIndex--;
-                document.getElementById('result').textContent = drawnItems[currentIndex];
+                document.getElementById('result').textContent = items[currentIndex];
                 document.getElementById('previousButton').disabled = currentIndex === 0;
                 document.getElementById('drawButton').disabled = false;
                 document.getElementById('optionsSection').style.display = 'none';
@@ -288,12 +326,11 @@ Green Shoes"></textarea>
         function showNewInput() {
             document.getElementById('setupSection').style.display = 'block';
             document.getElementById('drawerSection').style.display = 'none';
-            document.getElementById('itemList').value = '';
+            document.getElementById('itemList').value = originalItems.join('\n');
         }
 
         function reuseList() {
-            items = [...originalItems];
-            drawnItems = [];
+            items = shuffleArray([...originalItems]); // Reshuffle when reusing
             currentIndex = -1;
             document.getElementById('drawButton').disabled = false;
             document.getElementById('previousButton').disabled = true;
@@ -301,11 +338,8 @@ Green Shoes"></textarea>
             document.getElementById('optionsSection').style.display = 'none';
         }
 
-        function adjustTextSize(delta) {
-            const result = document.getElementById('result');
-            currentFontSize = Math.max(32, Math.min(120, currentFontSize + delta));
-            result.style.fontSize = currentFontSize + 'px';
-            result.style.minHeight = Math.max(120, currentFontSize * 2) + 'px';
+        function clearInput() {
+            document.getElementById('itemList').value = '';
         }
     </script>
 </body>
