@@ -2,78 +2,152 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Item Drawer</title>
     <style>
+        * {
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
         body {
-            font-family: Arial, sans-serif;
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 20px;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            margin: 0;
+            padding: 16px;
             text-align: center;
             display: flex;
             flex-direction: column;
             min-height: 100vh;
             justify-content: center;
+            background-color: #f0f2f5;
         }
+
         .container {
-            background-color: #f5f5f5;
-            padding: 40px;
-            border-radius: 10px;
-            margin-top: 20px;
+            background-color: #ffffff;
+            padding: 20px;
+            border-radius: 16px;
+            margin: 0 auto;
+            width: 100%;
+            max-width: 600px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
         }
+
         .setup-container {
             margin-bottom: 20px;
         }
+
+        h1 {
+            font-size: 24px;
+            margin: 0 0 20px 0;
+            color: #1a1a1a;
+        }
+
         button {
-            padding: 15px 30px;
-            font-size: 20px;
+            padding: 16px 24px;
+            font-size: 18px;
             background-color: #4CAF50;
             color: white;
             border: none;
-            border-radius: 5px;
+            border-radius: 12px;
             cursor: pointer;
-            margin: 10px;
+            margin: 8px;
+            width: 100%;
+            max-width: 300px;
+            touch-action: manipulation;
+            -webkit-appearance: none;
+            transition: background-color 0.2s;
         }
+
+        button:active {
+            background-color: #3d8b40;
+        }
+
         button.secondary {
             background-color: #607d8b;
         }
+
+        button.secondary:active {
+            background-color: #455a64;
+        }
+
         button:disabled {
             background-color: #cccccc;
             cursor: not-allowed;
         }
+
         .button-group {
             display: flex;
-            justify-content: center;
-            gap: 10px;
+            flex-direction: column;
+            align-items: center;
+            gap: 12px;
+            margin: 16px 0;
         }
+
+        @media (min-width: 480px) {
+            .button-group {
+                flex-direction: row;
+                justify-content: center;
+            }
+
+            button {
+                width: auto;
+            }
+        }
+
         #result {
-            font-size: 32px;
-            margin: 30px;
+            font-size: 28px;
+            margin: 24px 0;
+            padding: 16px;
             font-weight: bold;
-            color: #333;
-            min-height: 48px;
+            color: #1a1a1a;
+            min-height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            word-break: break-word;
         }
+
         textarea {
             width: 100%;
             height: 150px;
-            margin: 10px 0;
-            padding: 10px;
-            border-radius: 5px;
-            border: 1px solid #ddd;
+            margin: 12px 0;
+            padding: 16px;
+            border-radius: 12px;
+            border: 2px solid #e0e0e0;
+            font-size: 16px;
+            font-family: inherit;
+            resize: vertical;
         }
+
+        textarea:focus {
+            outline: none;
+            border-color: #4CAF50;
+        }
+
         .instructions {
             color: #666;
-            font-size: 14px;
-            margin-bottom: 10px;
+            font-size: 16px;
+            margin-bottom: 12px;
             text-align: left;
         }
+
         .drawer-container {
             display: none;
         }
+
         .options-container {
             display: none;
             margin-top: 20px;
+        }
+
+        /* Add safe area padding for modern iOS devices */
+        @supports(padding: max(0px)) {
+            body {
+                padding-left: max(16px, env(safe-area-inset-left));
+                padding-right: max(16px, env(safe-area-inset-right));
+                padding-bottom: max(16px, env(safe-area-inset-bottom));
+                padding-top: max(16px, env(safe-area-inset-top));
+            }
         }
     </style>
 </head>
@@ -85,6 +159,7 @@
                 Enter your items below, one per line:
             </div>
             <textarea id="itemList" placeholder="Enter items here, one per line
+
 Example:
 Red T-shirt
 Blue Hat
@@ -98,8 +173,10 @@ Green Shoes"></textarea>
             </div>
             <div id="result"></div>
             <div id="optionsSection" class="options-container">
-                <button onclick="showNewInput()" class="secondary">New List</button>
-                <button onclick="reuseList()" class="secondary">Reuse List</button>
+                <div class="button-group">
+                    <button onclick="showNewInput()" class="secondary">New List</button>
+                    <button onclick="reuseList()" class="secondary">Reuse List</button>
+                </div>
             </div>
         </div>
     </div>
@@ -109,6 +186,13 @@ Green Shoes"></textarea>
         let originalItems = [];
         let drawnItems = [];
         let currentIndex = -1;
+
+        // Prevent double-tap zoom on buttons
+        document.addEventListener('touchend', function(event) {
+            if (event.target.tagName === 'BUTTON') {
+                event.preventDefault();
+            }
+        });
 
         function initializeDrawer() {
             const itemText = document.getElementById('itemList').value.trim();
