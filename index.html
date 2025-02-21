@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Item Drawer</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            justify-content: center;
+        }
+        .container {
+            background-color: #f5f5f5;
+            padding: 40px;
+            border-radius: 10px;
+            margin-top: 20px;
+        }
+        .setup-container {
+            margin-bottom: 20px;
+        }
+        button {
+            padding: 15px 30px;
+            font-size: 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 10px;
+        }
+        button.secondary {
+            background-color: #607d8b;
+        }
+        button:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+        }
+        .button-group {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+        }
+        #result {
+            font-size: 32px;
+            margin: 30px;
+            font-weight: bold;
+            color: #333;
+            min-height: 48px;
+        }
+        textarea {
+            width: 100%;
+            height: 150px;
+            margin: 10px 0;
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+        }
+        .instructions {
+            color: #666;
+            font-size: 14px;
+            margin-bottom: 10px;
+            text-align: left;
+        }
+        .drawer-container {
+            display: none;
+        }
+        .options-container {
+            display: none;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div id="setupSection" class="setup-container">
+            <h1>Item Drawer</h1>
+            <div class="instructions">
+                Enter your items below, one per line:
+            </div>
+            <textarea id="itemList" placeholder="Enter items here, one per line
+Example:
+Red T-shirt
+Blue Hat
+Green Shoes"></textarea>
+            <button onclick="initializeDrawer()">Load Items</button>
+        </div>
+        <div id="drawerSection" class="drawer-container">
+            <div class="button-group">
+                <button id="previousButton" onclick="previousItem()" class="secondary" disabled>Previous</button>
+                <button id="drawButton" onclick="drawItem()">Draw Next Item</button>
+            </div>
+            <div id="result"></div>
+            <div id="optionsSection" class="options-container">
+                <button onclick="showNewInput()" class="secondary">New List</button>
+                <button onclick="reuseList()" class="secondary">Reuse List</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let items = [];
+        let originalItems = [];
+        let drawnItems = [];
+        let currentIndex = -1;
+
+        function initializeDrawer() {
+            const itemText = document.getElementById('itemList').value.trim();
+            if (!itemText) {
+                alert('Please enter some items');
+                return;
+            }
+            
+            items = itemText.split('\n')
+                .map(item => item.trim())
+                .filter(item => item.length > 0);
+
+            if (items.length === 0) {
+                alert('Please enter at least one item');
+                return;
+            }
+
+            // Store original items for reuse
+            originalItems = [...items];
+            drawnItems = [];
+            currentIndex = -1;
+
+            // Hide setup section and show drawer section
+            document.getElementById('setupSection').style.display = 'none';
+            document.getElementById('drawerSection').style.display = 'block';
+            document.getElementById('optionsSection').style.display = 'none';
+            document.getElementById('result').textContent = '';
+            document.getElementById('drawButton').disabled = false;
+            document.getElementById('previousButton').disabled = true;
+        }
+
+        function drawItem() {
+            if (items.length === 0) {
+                document.getElementById('drawButton').disabled = true;
+                document.getElementById('result').textContent = 'All items have been drawn!';
+                document.getElementById('optionsSection').style.display = 'block';
+                return;
+            }
+
+            const randomIndex = Math.floor(Math.random() * items.length);
+            const drawnItem = items.splice(randomIndex, 1)[0];
+            drawnItems.push(drawnItem);
+            currentIndex = drawnItems.length - 1;
+            
+            document.getElementById('result').textContent = drawnItem;
+            document.getElementById('previousButton').disabled = currentIndex === 0;
+        }
+
+        function previousItem() {
+            if (currentIndex > 0) {
+                currentIndex--;
+                document.getElementById('result').textContent = drawnItems[currentIndex];
+                document.getElementById('previousButton').disabled = currentIndex === 0;
+                document.getElementById('drawButton').disabled = false;
+                document.getElementById('optionsSection').style.display = 'none';
+            }
+        }
+
+        function showNewInput() {
+            document.getElementById('setupSection').style.display = 'block';
+            document.getElementById('drawerSection').style.display = 'none';
+            document.getElementById('itemList').value = '';
+        }
+
+        function reuseList() {
+            items = [...originalItems];
+            drawnItems = [];
+            currentIndex = -1;
+            document.getElementById('drawButton').disabled = false;
+            document.getElementById('previousButton').disabled = true;
+            document.getElementById('result').textContent = '';
+            document.getElementById('optionsSection').style.display = 'none';
+        }
+    </script>
+</body>
+</html>
